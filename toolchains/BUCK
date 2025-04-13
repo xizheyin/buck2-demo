@@ -1,0 +1,10 @@
+load(":riscv_rust_toolchain.bzl", "riscv_rust_toolchain")
+load("@prelude//toolchains:demo.bzl", "system_demo_toolchains")
+
+
+system_demo_toolchains()
+
+riscv_rust_toolchain(
+    name = "riscv_rust",
+    visibility = ["PUBLIC"],
+)
