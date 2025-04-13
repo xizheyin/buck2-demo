@@ -1,17 +1,23 @@
-load(":riscv_rust_toolchain.bzl", "riscv_rust_toolchain")
+load(":riscv_rust_toolchain.bzl", "riscv_cxx_toolchain", "riscv_rust_toolchain")
 load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
 load("@prelude//toolchains:python.bzl", "system_python_bootstrap_toolchain")
 
-system_cxx_toolchain(
+riscv_cxx_toolchain(
     name = "cxx",
+    base = ":cxx_host",
+    linker = "riscv64-linux-gnu-gcc",
+    linker_type = "gnu",
     visibility = ["PUBLIC"],
+)
+
+system_cxx_toolchain(
+    name = "cxx_host",
 )
 
 system_python_bootstrap_toolchain(
     name = "python_bootstrap",
     visibility = ["PUBLIC"],
 )
-
 
 riscv_rust_toolchain(
     name = "rust",
