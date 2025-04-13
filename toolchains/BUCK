@@ -1,10 +1,20 @@
 load(":riscv_rust_toolchain.bzl", "riscv_rust_toolchain")
-load("@prelude//toolchains:demo.bzl", "system_demo_toolchains")
+load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
+load("@prelude//toolchains:python.bzl", "system_python_bootstrap_toolchain")
 
+system_cxx_toolchain(
+    name = "cxx",
+    visibility = ["PUBLIC"],
+)
 
-system_demo_toolchains()
+system_python_bootstrap_toolchain(
+    name = "python_bootstrap",
+    visibility = ["PUBLIC"],
+)
+
 
 riscv_rust_toolchain(
-    name = "riscv_rust",
+    name = "rust",
+    default_edition="2021",
     visibility = ["PUBLIC"],
 )

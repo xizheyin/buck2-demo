@@ -17,5 +17,3 @@ buck = none
 [parser]
 target_platform_detector_spec = target:root//...->prelude//platforms:default
 
-[rust]
-toolchain = toolchains//:riscv_rust
