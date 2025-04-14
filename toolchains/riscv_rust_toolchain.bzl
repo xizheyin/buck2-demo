@@ -1,7 +1,41 @@
+load("@prelude//cxx:cxx_toolchain_types.bzl", "CxxPlatformInfo", "CxxToolchainInfo", "LinkerInfo", "LinkerType")
 load("@prelude//rust:rust_toolchain.bzl", "PanicRuntime", "RustToolchainInfo")
 
+def _riscv_cxx_toolchain_impl(ctx: AnalysisContext) -> list[Provider]:
+    base = ctx.attrs.base[CxxToolchainInfo]
 
+    linker_info = {
+        field: getattr(base.linker_info, field)
+        for field in dir(base.linker_info)
+    } | dict(
+        linker = RunInfo(ctx.attrs.linker),
+        linker_flags = ctx.attrs.linker_flags,
+        type = LinkerType(ctx.attrs.linker_type),
+    )
 
+    cxx_toolchain_info = {
+        field: getattr(base, field)
+        for field in dir(base)
+    } | dict(
+        linker_info = LinkerInfo(**linker_info),
+    )
+
+    return [
+        DefaultInfo(),
+        ctx.attrs.base[CxxPlatformInfo],
+        CxxToolchainInfo(**cxx_toolchain_info),
+    ]
+
+riscv_cxx_toolchain = rule(
+    impl = _riscv_cxx_toolchain_impl,
+    attrs = {
+        "base": attrs.toolchain_dep(providers = [CxxPlatformInfo, CxxToolchainInfo]),
+        "linker": attrs.string(),
+        "linker_flags": attrs.list(attrs.arg(), default = []),
+        "linker_type": attrs.enum(LinkerType.values()),
+    },
+    is_toolchain_rule = True,
+)
 
 def _riscv_rust_toolchain_impl(ctx):
     return [
